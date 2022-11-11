@@ -1,9 +1,6 @@
 "use strict";
 
-const ueser = {
-    id: ["A", "B", "C"],
-    passward: ["123","456", "789"],
-};
+const UserStorage = require("../../model/UserStorage");
 
 const output = {
     home:(req,res) =>{
@@ -18,19 +15,21 @@ const process = {
     login: (req,res) =>{
         const id = req.body.id;
         const passward = req.body.passward;
-    
-        if(ueser.id.includes(id)){
-            const idx = ueser.id.indexOf(id);
-            if(ueser.passward[idx] == passward){
-                return res.json({
-                    success: true,
-                });
+
+        const users = UserStorage.getUsers("id","passward");
+        
+        const response = {};
+        if(users.id.includes(id)){
+            const idx = users.id.indexOf(id);
+            if(users.passward[idx] == passward){
+                response.success = true;
+                return res.json(response);
             }
         }
-        return res.json({
-            success: false,
-            msg: "실패",
-        })
+
+        response.success = false;
+        response.msg = "에러";
+        return res.json(response);
     },
 }
 
